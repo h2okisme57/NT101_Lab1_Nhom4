@@ -1,7 +1,12 @@
 from test_data import *
+from policy import POLICY
 
-def json_search(key, input_object):
+def json_search(key, input_object, role=None):
     ret_val = []
+
+    # Access control: deny if the key is protected and the role is not allowed
+    if key in POLICY and role not in POLICY[key]:
+        return ret_val
 
     def _search(target_key, obj):
         if isinstance(obj, dict):
@@ -20,4 +25,5 @@ def json_search(key, input_object):
     return ret_val
 
 if __name__ == '__main__':
-    print(json_search("issueSummary", data))
+    print(json_search("issueSummary", data, role="admin"))
+
